@@ -1,0 +1,26 @@
+{% extends "layout.njk" %}
+{% block  content %}
+<div class="inlagg-container">
+    <form action="/new" method="post">
+        <div class="inlagg">
+            <label for="author">Författare</label>
+            <select name="author" id="author">
+                {% for user in users %}
+                    <option value="{{ user.name }}">{{ user.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="inlagg">
+            <label for="title">Titel</label>
+            <input type="text" name="title" id="title">
+        </div>
+        <div class="inlagg">
+            <label for="content">Innehåll</label>
+            <textarea name="content" id="content" cols="30" rows="10"></textarea>
+        </div>
+        <div class="inlagg">
+            <button type="submit">Skicka</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

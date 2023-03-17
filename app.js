@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
@@ -7,6 +8,16 @@ const nunjucks = require('nunjucks');
 const indexRouter = require('./routes/index');
 
 const app = express();
+
+var session = require('express-session');
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true,
+  LoggedIn: false,
+}));
+
+console.log(session.Session);
 
 nunjucks.configure('views', {
     autoescape: true,

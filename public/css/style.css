@@ -1,0 +1,295 @@
+@charset "UTF-8";
+/*
+Credit to Andy Bell's Modern CSS Reset
+@link https://piccalil.li/blog/a-modern-css-reset/
+
+🟣 = additions by Stephanie Eckles 
+Twitter/Github/Codepen: @5t3ph
+*/
+/* Box sizing rules */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove default margin */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+  margin: 0;
+}
+
+/* Remove list styles on ul, ol elements with a list role, 
+which suggests default styling will be removed 
+
+🟣 Selector updated to reduce specificity
+*/
+:where(ul, ol):where([role=list]) {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Set core root defaults */
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+/* Set core body defaults */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  text-rendering: optimizeSpeed;
+  /* 🟣 Set base font-family */
+  font-family: system-ui, sans-serif;
+}
+
+/* A elements that don't have a class get default styles */
+a:not([class]) {
+  /* 🟣 Relatively sized thickness and offset */
+  text-decoration-thickness: max(0.08em, 1px);
+  text-underline-offset: 0.15em;
+}
+
+/* Make images easier to work with */
+img,
+picture,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* 🟣 Ensure images with a width attr responsively resize */
+img[width] {
+  height: auto;
+}
+
+/* 🟣 Give SVGs common baseline */
+svg {
+  /* Inherit from text color */
+  fill: currentColor;
+  /* Allow click events to "fall through" */
+  pointer-events: none;
+}
+
+/* 🟣 Scroll margin allowance above anchor links */
+:target {
+  scroll-margin-top: 2rem;
+}
+
+/* 🟣 Scroll margin allowance below focused elements 
+to ensure they are clearly in view */
+:focus {
+  scroll-margin-bottom: 8vh;
+}
+
+/* Inherit fonts for inputs and buttons */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Remove all animations, transitions and smooth scroll for people that prefer not to see them */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+html {
+  height: 100%;
+}
+
+body {
+  background: rgb(2, 0, 36);
+  background: linear-gradient(90deg, rgb(2, 0, 36) 0%, rgb(170, 16, 16) 35%, rgb(0, 212, 255) 100%);
+  color: black;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.container {
+  width: min(100ch, 100vw - 2rem);
+  margin-inline: auto;
+  display: flex;
+}
+
+.navbar {
+  background-color: #FF7C00;
+}
+.navbar__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 4rem;
+}
+.navbar__button {
+  background-color: transparent;
+}
+@media (min-width: 600px) {
+  .navbar__button {
+    display: none;
+  }
+}
+@media (max-width: 599px) {
+  .navbar__collapse {
+    display: none;
+  }
+}
+.navbar__collapse > ul {
+  display: flex;
+  gap: 1rem;
+  list-style: none;
+}
+.navbar__collapse--show {
+  display: block;
+  width: 100%;
+}
+.navbar__collapse--show > ul {
+  flex-direction: column;
+  padding: 0;
+}
+
+main {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.hero {
+  display: grid;
+  grid-template-areas: "stack";
+  justify-items: stretch;
+}
+.hero > * {
+  grid-area: stack;
+}
+.hero h1 {
+  color: #efefef;
+  place-self: center;
+}
+
+.filter {
+  height: 100%;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.flow > * + * {
+  margin-top: var(--flow-space, 1rem);
+}
+
+footer {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+}
+
+.show {
+  display: flex;
+}
+
+.hide {
+  display: none;
+}
+
+.inlagg {
+  display: flex;
+  flex-direction: column;
+}
+
+.inlagg-container {
+  background-color: #FF7C00;
+  padding: 1rem;
+  border-radius: 10px;
+}
+
+.data-containter {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+a {
+  color: rgb(0, 12, 174);
+}
+
+.menu-img {
+  width: 8rem;
+  height: auto;
+}
+
+.data-text {
+  padding: 1rem;
+  background-color: rgba(137, 77, 221, 0.6666666667);
+  border: 2px solid black;
+  border-radius: 9px;
+  word-wrap: break-word;
+}
+
+.data-samling {
+  padding: 0.5rem;
+}
+
+.data-border {
+  border: 2px solid black;
+  padding: 1rem;
+  background-color: #FF7C00;
+  border-radius: 9px;
+}
+
+.data-container-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.data-color {
+  background: rgb(131, 58, 180);
+  background: linear-gradient(90deg, rgb(131, 58, 180) 0%, rgb(253, 29, 29) 50%, rgb(252, 176, 69) 100%);
+  border-radius: 10px;
+}
+
+.data-padding {
+  padding-top: 2rem;
+  width: 100%;
+}
+
+footer {
+  display: flex;
+  background-color: #FF7C00;
+  width: 100%;
+  height: 1rem;
+}
+
+.space {
+  padding-top: 3rem;
+}
+
+.Forfattare {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: flex-end;
+  width: 12rem;
+}
+
+/*# sourceMappingURL=style.css.map */
