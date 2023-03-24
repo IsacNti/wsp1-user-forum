@@ -240,14 +240,16 @@ a {
 
 .data-text {
   padding: 1rem;
-  background-color: rgba(137, 77, 221, 0.6666666667);
+  background-color: #00ff7c;
   border: 2px solid black;
   border-radius: 9px;
   word-wrap: break-word;
+  color: #7c00ff;
 }
 
 .data-samling {
   padding: 0.5rem;
+  color: black;
 }
 
 .data-border {
@@ -267,6 +269,7 @@ a {
   background: rgb(131, 58, 180);
   background: linear-gradient(90deg, rgb(131, 58, 180) 0%, rgb(253, 29, 29) 50%, rgb(252, 176, 69) 100%);
   border-radius: 10px;
+  color: #efefef;
 }
 
 .data-padding {
@@ -290,6 +293,12 @@ footer {
   justify-content: space-evenly;
   align-items: flex-end;
   width: 12rem;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /*# sourceMappingURL=style.css.map */
