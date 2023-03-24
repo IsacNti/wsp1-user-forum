@@ -1,9 +1,23 @@
 {% extends "layout.njk" %}
-{% block  content %}
+{% block content %}
 
-    {{ post | dump }}
-
-  <h1>{{ post.title }}</h1>
-    <p>{{ post.content }}</p>
-    <p>Skapad av <a href="/users/{{ post.authorId }}">{{ post.username }}</a> den {{ post.createdAt }}</p>
+<div class="data-color">
+  <div class="data-samling">
+    <div class="data-border">
+      <div class="inlagg">
+        <div class="data-containter">
+          <div class="data-container-title">
+            <h1>{{ post.title }}</h1>
+          </div>
+          <div class="Författare">
+            <p>Skapad av <a href="/users/{{ post.authorId }}">{{ post.username }}</a> den {{ post.createdAt }}</p>
+          </div>
+        </div>
+        <div class="data-text">
+          <p>{{ post.content }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}

@@ -19,21 +19,21 @@ router.get('/login', function (req, res, next) {
 
 router.get('/profile', async function (req, res, next) {
     //console.log(req.session)
-    
+
     //const [users] = await promisePool.query("SELECT * FROM unusers WHERE id=?", req.session.userId);
     //console.log(req.session)
     if (req.session.LoggedIn) {
-        return res.render('profile.njk', {   
-            title: 'Profile', 
-            user: req.session.userId, 
+        return res.render('profile.njk', {
+            title: 'Profile',
+            user: req.session.userId,
         }
         );
     } else {
-        
+
         return res.status(401).send("Access denied");
     }
 
-    
+
 
 });
 
@@ -51,7 +51,7 @@ router.post('/login', async function (req, res, next) {
         errors.push("Password is Required")
         return res.json(errors)
     }
-    const [users] = await promisePool.query("SELECT * FROM unusers WHERE name=?", username);
+    const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", username);
     //console.log(users)
     if (users.length > 0) {
 
@@ -74,31 +74,31 @@ router.post('/login', async function (req, res, next) {
     // if username inte är i db : login fail!
 });
 
-router.post('/delete', async function(req, res, next) {
-    if(req.session.LoggedIn) {
+router.post('/delete', async function (req, res, next) {
+    if (req.session.LoggedIn) {
         req.session.LoggedIn = false;
-        await promisePool.query('DELETE FROM unusers WHERE name=?', req.session.userId);
+        await promisePool.query('DELETE FROM il05users WHERE name=?', req.session.userId);
         res.redirect('/');
     } else {
         return res.status(401).send("Access denied");
     }
 });
 
-router.post('/logout', async function(req, res, next) {
+router.post('/logout', async function (req, res, next) {
     console.log(req.session.LoggedIn);
-    if(req.session.LoggedIn) {
-    req.session.LoggedIn = false;
-    res.redirect('/');
+    if (req.session.LoggedIn) {
+        req.session.LoggedIn = false;
+        res.redirect('/');
     } else {
         return res.status(401).send("Access denied");
     }
 });
 
-router.get('/register', async function(req, res) {
+router.get('/register', async function (req, res) {
     res.render('register.njk', { title: 'Register' })
 });
 
-router.post('/register', async function(req, res) {
+router.post('/register', async function (req, res) {
     const { username, password, passwordConfirmation } = req.body;
     const errors = [];
 
@@ -110,12 +110,12 @@ router.post('/register', async function(req, res) {
         console.log("Password is Required")
         errors.push("Password is Required")
         return res.json(errors)
-    } else if(password !== passwordConfirmation ){
+    } else if (password !== passwordConfirmation) {
         console.log("Passwords do not match")
         errors.push("Passwords do not match")
         return res.json(errors)
     }
-    const [users] = await promisePool.query("SELECT * FROM unusers WHERE name=?", username);
+    const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", username);
     //console.log(users)
 
     if (users.length > 0) {
@@ -127,13 +127,13 @@ router.post('/register', async function(req, res) {
     await bcrypt.hash(password, 10, async function (err, hash) {
 
         console.log(hash);
-        const [rows] = await promisePool.query('INSERT INTO unusers (name, password) VALUES (?, ?)', [username, hash])
+        const [rows] = await promisePool.query('INSERT INTO il05users (name, password) VALUES (?, ?)', [username, hash])
         res.redirect('/login');
 
     });
 
-    
-    
+
+
 });
 
 router.get('/crypt/:pwd', async function (req, res, next) {
@@ -157,12 +157,12 @@ router.get('/', async function (req, res, next) {
 });
 
 router.get('/new', async function (req, res, next) {
-    if(req.session.LoggedIn){
-        const [users] = await promisePool.query("SELECT * FROM unusers WHERE name=?", req.session.userId);
+    if (req.session.LoggedIn) {
+        const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", req.session.userId);
         return res.render('new.njk', {
-        title: 'Nytt inlägg',
-        users,
-    });
+            title: 'Nytt inlägg',
+            users,
+        });
     }
     /*
     för att kunna gå in i new utan att behöva vara inloggad
@@ -173,23 +173,12 @@ router.get('/new', async function (req, res, next) {
         //users,
     });
     */
-   res.redirect('/login')
+    res.redirect('/login')
 });
 
 router.post('/new', async function (req, res, next) {
     const { author, title, content } = req.body;
 
-    let user = await promisePool.query('SELECT * FROM unusers WHERE name = ?', [author]);
-    if (!user) {
-    user = await promisePool.query('INSERT INTO unusers (name) VALUES (?)', [author]);
-    }
-
-    const userId = user.insertId || user[0][0].id;
-    const [rows] = await promisePool.query('INSERT INTO il05forum (authorId, title, content) VALUES (?, ?, ?)', [userId, title, content]);
-    res.redirect('/');
-    
-});
-    /*
     let user = await promisePool.query('SELECT * FROM il05users WHERE name = ?', [author]);
     if (!user) {
         user = await promisePool.query('INSERT INTO il05users (name) VALUES (?)', [author]);
@@ -197,7 +186,18 @@ router.post('/new', async function (req, res, next) {
 
     const userId = user.insertId || user[0][0].id;
     const [rows] = await promisePool.query('INSERT INTO il05forum (authorId, title, content) VALUES (?, ?, ?)', [userId, title, content]);
-    res.redirect('/'); // den här raden kan vara bra att kommentera ut för felsökning, du kan då använda tex. res.json({rows}) för att se vad som skickas tillbaka från databasen
+    res.redirect('/');
+
+});
+/*
+let user = await promisePool.query('SELECT * FROM il05users WHERE name = ?', [author]);
+if (!user) {
+    user = await promisePool.query('INSERT INTO il05users (name) VALUES (?)', [author]);
+}
+
+const userId = user.insertId || user[0][0].id;
+const [rows] = await promisePool.query('INSERT INTO il05forum (authorId, title, content) VALUES (?, ?, ?)', [userId, title, content]);
+res.redirect('/'); // den här raden kan vara bra att kommentera ut för felsökning, du kan då använda tex. res.json({rows}) för att se vad som skickas tillbaka från databasen
 });
 
 */
@@ -208,9 +208,9 @@ router.post('/new', async function (req, res, next) {
 
 router.get('/postlista', async function (req, res, next) {
     const [rows] = await promisePool.query(`
-    SELECT il05forum.*, unusers.name AS username
+    SELECT il05forum.*, il05users.name AS username
     FROM il05forum
-    JOIN unusers ON il05forum.authorId = unusers.id;`);
+    JOIN il05users ON il05forum.authorId = il05users.id;`);
     res.render('lista.njk', {
         rows: rows,
         title: 'Forum',
@@ -219,14 +219,16 @@ router.get('/postlista', async function (req, res, next) {
 
 
 router.get('/post/:id', async function (req, res) {
+
+    console.log(req.params)
     const [rows] = await promisePool.query(
-        `SELECT il05forum.*, unusers.name AS username
+        `SELECT il05forum.*, il05users.name AS username
         FROM il05forum
-        JOIN unusers ON il05forum.authorId = unusers.id
+        JOIN il05users ON il05forum.authorId = il05users.id
         WHERE il05forum.id = ?;`,
         [req.params.id]
     );
-
+    console.log(rows)
     res.render('post.njk', {
         post: rows[0],
         title: 'Forum',

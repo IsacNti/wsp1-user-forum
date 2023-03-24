@@ -1,31 +1,28 @@
 <!DOCTYPE html>
 <html lang="sv">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-    {% include "nav.njk" %}
-    <main class="container flow">
-        <div class="data-padding">
-            {% block content %}
-            {% endblock %}
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{title}}</title>
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
+    <body>
+        {% include "nav.njk" %}
+        <main class="container flow">
+            <div class="data-padding">
+                {% block content %}{% endblock %}
+            </div>
+            <section class="flow">
+                <p> Skriv saker under data </p>
+            </section>
+        </main>
+        <div class="space"></div>
+        <div class="footer-flex">
+            <footer class="fotter">
+                {% include "footer.njk" %}
+            </footer>
         </div>
-        <section class="flow">
-            <p> Skriv saker under data </p>
-        </section>
-    </main>
-    <div class="space">
-
-    </div>
-    <div class="footer-flex">
-        <footer class="fotter">
-            {% include "footer.njk" %}
-        </footer>
-    </div>
-    <script src="/js/menu.js"></script>
-</body>
+        <script src="/js/menu.js"></script>
+    </body>
 </html>

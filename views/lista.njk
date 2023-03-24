@@ -1,31 +1,33 @@
 {% extends "layout.njk" %}
-{% block  content %}
-    <div class="data-color">
-        <h1 style="padding: 1rem;">Flödde</h1>
-        {% for row in rows %}
-            <div class="data-samling">
-                <div class="data-border">
-                    <div>
-                        <div class="data-containter">
-                            <div class="data-container-title">
-                                <div>
-                                    <h2>{{ row.title }}</h2>
-                                </div>
-                                <div class="Forfattare">
-                                    <h3>Författare:</h3>
-                                    <h4> {{ row.username}}</h4>
-                                </div>
-                            </div>
+{% block content %}
+<div class="data-color">
+    <h1 style="padding: 1rem;">Flödde</h1>
+    {% for row in rows %}
+    <div class="data-samling">
+        <div class="data-border">
+            <div>
+                <div class="data-containter">
+                    <div class="data-container-title">
+                        <div>
+                            <a href="/post/{{ row.id }}">
+                                <h2>{{ row.title }}</h2>
+                            </a>
                         </div>
-                        <div class="data-text">
-                            <p>{{ row.content }} </p>
+                        <div class="Forfattare">
+                            <h3>Författare:</h3>
+                            <h4> {{ row.username}}</h4>
                         </div>
-                    </div>
-                    <div class="data-containter">
-                        <p>{{ row.createdAt }}</p>
                     </div>
                 </div>
+                <div class="data-text">
+                    <p>{{ row.content }} </p>
+                </div>
             </div>
-        {% endfor %}
+            <div class="data-containter">
+                <p>{{ row.createdAt }}</p>
+            </div>
+        </div>
     </div>
+    {% endfor %}
+</div>
 {% endblock %}
