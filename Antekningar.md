@@ -40,3 +40,17 @@ Fixa så post fungerar möjligtvis göra så de går edita en post
 
 Kommer inte in i post 
 
+## 2023-03-28
+
+### Vad gjorde jag sist 
+
+Gjorde klart post så den inloggade användaren gör posten
+
+### vad ska jag göra idag 
+
+Fixa så då du endast kan se post då du inloggad samt fixa validering
+
+### Vad hindrar mig
+
+den visar allt
+

@@ -10,11 +10,16 @@ const { post } = require('../app.js');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-    res.render('index.njk', { title: 'Login ALC' });
+    res.render('index.njk', {
+        title: 'Login ALC', user: req.session.LoggedIn || 0
+    });
 });
 
 router.get('/login', function (req, res, next) {
-    res.render('form.njk', { title: 'Login ALC' });
+    if(!req.session.LoggedIn){
+    return res.render('form.njk', { title: 'Login ALC', user: req.session.LoggedIn || 0 });
+    }
+
 });
 
 router.get('/profile', async function (req, res, next) {
@@ -25,12 +30,12 @@ router.get('/profile', async function (req, res, next) {
     if (req.session.LoggedIn) {
         return res.render('profile.njk', {
             title: 'Profile',
-            user: req.session.userId,
+            user: req.session.LoggedIn || 0
         }
         );
     } else {
 
-        return res.status(401).send("Access denied");
+        return res.redirect('/login')
     }
 
 
@@ -84,18 +89,27 @@ router.post('/delete', async function (req, res, next) {
     }
 });
 
+router.get('/logout', function (req, res, next) {
+    req.session.LoggedIn = false;
+    res.render('logout.njk', { title: 'logout ALC', user: req.session.LoggedIn || 0 });
+});
+
 router.post('/logout', async function (req, res, next) {
     console.log(req.session.LoggedIn);
     if (req.session.LoggedIn) {
         req.session.LoggedIn = false;
         res.redirect('/');
+        
     } else {
         return res.status(401).send("Access denied");
     }
 });
 
 router.get('/register', async function (req, res) {
-    res.render('register.njk', { title: 'Register' })
+    if(!req.session.LoggedIn) {
+    return res.render('register.njk', { title: 'Register', user: req.session.LoggedIn || 0 })
+    }
+    res.redirect('/profile')
 });
 
 router.post('/register', async function (req, res) {
@@ -148,20 +162,15 @@ router.get('/crypt/:pwd', async function (req, res, next) {
 
 });
 
-router.get('/', async function (req, res, next) {
-    const [rows] = await promisePool.query("SELECT * FROM il05forum JOIN il05users ON il05forum.authorId = il05users.id");
-    res.render('index.njk', {
-        rows: rows,
-        title: 'Forum',
-    });
-});
+
 
 router.get('/new', async function (req, res, next) {
-    if (req.session.LoggedIn) {
-        const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", req.session.userId);
+    if(req.session.LoggedIn){
+    const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", req.session.userId);
         return res.render('new.njk', {
             title: 'Nytt inlägg',
             users,
+            user: req.session.userId || 0
         });
     }
     /*
@@ -173,12 +182,29 @@ router.get('/new', async function (req, res, next) {
         //users,
     });
     */
-    res.redirect('/login')
+   res.redirect('/login')
 });
 
 router.post('/new', async function (req, res, next) {
     const { author, title, content } = req.body;
-
+    /*
+    if (!title){
+        errors.push('Title is required')
+        return res.json(errors)
+    }
+    if (!content){ 
+        errors.push('Body is required')
+        return res.json(errors)
+    }
+    if (title && title.length <= 3){
+        errors.push('Title must be at least 3 characters')
+        return res.json(errors)
+    }
+    if (content && body.length <= 10){
+        errors.push('Body must be at least 10 characters') 
+        return res.json(errors)
+    }
+    */
     let user = await promisePool.query('SELECT * FROM il05users WHERE name = ?', [author]);
     if (!user) {
         user = await promisePool.query('INSERT INTO il05users (name) VALUES (?)', [author]);
@@ -214,6 +240,7 @@ router.get('/postlista', async function (req, res, next) {
     res.render('lista.njk', {
         rows: rows,
         title: 'Forum',
+        user: req.session.LoggedIn || 0
     });
 });
 
