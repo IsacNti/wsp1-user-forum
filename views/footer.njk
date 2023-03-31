@@ -1,6 +1,11 @@
-<div>
-    <ul>
-        <a href="/">Hem</a>
-        <a href="/new">Skappa inlägg</a>
-    </ul>
-</div>
+<ul class="ul">
+    <li>
+        <a href="/">Till startsida</a>
+    </li>
+    {% if user %}
+        <li>
+            <a href="/new">Skappa inlägg</a>
+        </li>
+    {% else %}
+    {% endif %}
+</ul>
