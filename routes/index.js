@@ -5,6 +5,7 @@ const pool = require('../utils/database.js');
 const promisePool = pool.promise();
 const bcrypt = require('bcrypt');
 const { post } = require('../app.js');
+var validator = require('validator')
 //const session = require('express-session');
 
 
@@ -187,32 +188,45 @@ router.get('/new', async function (req, res, next) {
 
 router.post('/new', async function (req, res, next) {
     const { author, title, content } = req.body;
-    /*
+    const errors = [];
     if (!title){
-        errors.push('Title is required')
-        return res.json(errors)
+        errors.push("Title is required")
     }
     if (!content){ 
-        errors.push('Body is required')
-        return res.json(errors)
+        errors.push("Content is required")
     }
     if (title && title.length <= 3){
-        errors.push('Title must be at least 3 characters')
-        return res.json(errors)
+        errors.push("Title must be at least 3 characters")
     }
-    if (content && body.length <= 10){
-        errors.push('Body must be at least 10 characters') 
-        return res.json(errors)
+    if (content && content.length <= 10){
+        errors.push("Content must be at least 10 characters") 
     }
-    */
-    let user = await promisePool.query('SELECT * FROM il05users WHERE name = ?', [author]);
-    if (!user) {
-        user = await promisePool.query('INSERT INTO il05users (name) VALUES (?)', [author]);
+    if(errors.length > 0){
+        return res.json(errors)
     }
 
+
+    let sanitizedTitle, sanitizedContent;
+    if (errors.length === 0) {
+        // sanitize title och body, tvätta datan
+        const sanitize = (str) => {
+            let temp = str.trim();
+            temp = validator.stripLow(temp);
+            temp = validator.escape(temp);
+            return temp;
+        };
+        if (title) sanitizedTitle = sanitize(title);
+        if (content) sanitizedContent = sanitize(content);
+    }
+
+    
+    
+    let user = await promisePool.query('SELECT * FROM il05users WHERE name = ?', [author]);
+    
     const userId = user.insertId || user[0][0].id;
-    const [rows] = await promisePool.query('INSERT INTO il05forum (authorId, title, content) VALUES (?, ?, ?)', [userId, title, content]);
+    const [rows] = await promisePool.query('INSERT INTO il05forum (authorId, title, content) VALUES (?, ?, ?)', [userId, sanitizedTitle, sanitizedContent]);
     res.redirect('/');
+
 
 });
 /*

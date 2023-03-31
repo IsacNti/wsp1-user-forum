@@ -4,12 +4,15 @@
     <h1>Välkommen</h1>
     <div>
         <div class="inlagg">
+            {% if user %}
+            {% else %}
             <button>
                 <a href="/login">Logga in</a> <br>
             </button>
             <button>
                 <a href="/register">Registrera</a>
             </button>
+            {% endif %}
         </div>
     </div>
 </div>

@@ -10,7 +10,7 @@
                     <div class="data-container-title">
                         <div>
                             <a href="/post/{{ row.id }}">
-                                <h2>{{ row.title }}</h2>
+                                <h2>{{ row.title | safe}}</h2>
                             </a>
                         </div>
                         <div class="Forfattare">
@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="data-text">
-                    <p>{{ row.content }} </p>
+                    <p>{{ row.content | safe}} </p>
                 </div>
             </div>
             <div class="data-containter">
