@@ -6,7 +6,7 @@
             <label for="author">Författare</label>
             <select name="author" id="author">
                 {% for user in users %}
-                    <option value="{{ user.name }}">{{ user.name }}</option>
+                    <option value="{{ user.name }}">{{ user.name | safe }}</option>
                 {% endfor %}
             </select>
         </div>

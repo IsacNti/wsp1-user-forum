@@ -77,7 +77,7 @@ router.post('/login', async function (req, res, next) {
             // result == true logga in, annars buuuu 
             if (result) {
                 //console.log(users[0].id)
-                req.session.userId = username;
+                req.session.userId = sanitizedUsername;
                 req.session.LoggedIn = true;
                 return res.redirect('/profile');
             } else {
