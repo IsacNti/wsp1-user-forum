@@ -6,12 +6,12 @@
         <div class="inlagg">
             {% if user %}
             {% else %}
-            <button>
-                <a href="/login">Logga in</a> <br>
-            </button>
-            <button>
-                <a href="/register">Registrera</a>
-            </button>
+            <a href="/login">
+                <button class="startsida">Logga in</button>
+            </a> 
+            <a href="/register" class="startsida">
+                <button class="startsida">Registrera</button>
+            </a>
             {% endif %}
         </div>
     </div>

@@ -57,7 +57,19 @@ router.post('/login', async function (req, res, next) {
         errors.push("Password is Required")
         return res.json(errors)
     }
-    const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", username);
+    let sanitizedUsername;
+    if (errors.length === 0) {
+        // sanitize title och body, tvätta datan
+        const sanitize = (str) => {
+            let temp = str.trim();
+            temp = validator.stripLow(temp);
+            temp = validator.escape(temp);
+            return temp;
+        };
+        if (username) sanitizedUsername = sanitize(username);
+    }
+
+    const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", sanitizedUsername);
     //console.log(users)
     if (users.length > 0) {
 
@@ -130,7 +142,19 @@ router.post('/register', async function (req, res) {
         errors.push("Passwords do not match")
         return res.json(errors)
     }
-    const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", username);
+    let sanitizedUsername;
+    if (errors.length === 0) {
+        // sanitize title och body, tvätta datan
+        const sanitize = (str) => {
+            let temp = str.trim();
+            temp = validator.stripLow(temp);
+            temp = validator.escape(temp);
+            return temp;
+        };
+        if (username) sanitizedUsername = sanitize(username);
+    }
+
+    const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", sanitizedUsername);
     //console.log(users)
 
     if (users.length > 0) {
@@ -142,7 +166,7 @@ router.post('/register', async function (req, res) {
     await bcrypt.hash(password, 10, async function (err, hash) {
 
         console.log(hash);
-        const [rows] = await promisePool.query('INSERT INTO il05users (name, password) VALUES (?, ?)', [username, hash])
+        const [rows] = await promisePool.query('INSERT INTO il05users (name, password) VALUES (?, ?)', [sanitizedUsername, hash])
         res.redirect('/login');
 
     });
