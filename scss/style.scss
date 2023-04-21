@@ -102,7 +102,7 @@ main {
 
 .inlagg-container {
     background-color: #FF7C00;
-    padding: 1rem;
+    padding: 1.5rem;
     border-radius: 10px;
 }
 
@@ -200,4 +200,21 @@ footer{
     display: flex;
     width: 100%;
     justify-content: center;
+}
+
+.sta-info{
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 2rem;
+}
+
+.sta-1{
+    width: 45%;
+}
+.sta-2{
+    width: 10%;
+}
+
+.text-center{
+    text-align: center;
 }

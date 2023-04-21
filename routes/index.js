@@ -274,7 +274,7 @@ router.get('/postlista', async function (req, res, next) {
     const [rows] = await promisePool.query(`
     SELECT il05forum.*, il05users.name AS username
     FROM il05forum
-    JOIN il05users ON il05forum.authorId = il05users.id;`);
+    JOIN il05users ON il05forum.authorId = il05users.id ORDER BY createdAt DESC;`);
     res.render('lista.njk', {
         rows: rows,
         title: 'Forum',
