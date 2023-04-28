@@ -2,9 +2,50 @@
 {% block  content %}
 <div class="data-color">
     <div class="profile">
-        <h1>{{ title }}</h1>
-        <div>
-            <p>Username: {{ user }}</p>
+        <div class="profile-hero">
+            <div class="pro-1">
+                user,ålder,plats
+                {% for user in users %}
+                    <h1>{{ user.name | safe }}</h1>
+                {% endfor %}
+                {% for user in info %}
+                    <p>Ålder: </p>
+                    <p>Land: </p>
+                {% endfor %}
+                <h3 class="text-center">3 senaste tillagda spel </h3>
+                <ul>
+                    {% for row in rows %}
+                        <li>
+                            <p>{{ row.spel | safe}}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+
+            </div>
+            <div class="pro-2">
+                <h3 class="text-center">3 senaste önskade spel </h3>
+                <ul>
+                    {% for row in rows %}
+                        <li>
+                            <p>{{ row.spelha | safe}}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <h3  class="text-center">3 spotify länkar </h3>
+                <ul>
+                    {% for row in rows %}
+                        <li>
+                            <p>{{ row.spotify | safe}}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="pro-3">
+                profil bild
+            </div>
+        </div>
+        <div class="pro-beskriv">
+            Personlig beskrivnings text, (delete Account)?
         </div>
         <form action="/logout" method="POST">
             <button type="submit" id="logout">Logout</button>

@@ -294,6 +294,38 @@ footer {
 .profile {
   display: flex;
   flex-direction: column;
+  padding: 1rem;
+}
+
+.profile-hero {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.pro-1 {
+  width: 33%;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.pro-2 {
+  width: 33%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.pro-3 {
+  width: 33%;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+.pro-beskriv {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
 }
 
 .ul {
@@ -317,6 +349,7 @@ footer {
 
 .sta-1 {
   width: 45%;
+  height: 5rem;
 }
 
 .sta-2 {
@@ -325,6 +358,10 @@ footer {
 
 .text-center {
   text-align: center;
+}
+
+.text-underline {
+  text-decoration: underline;
 }
 
 /*# sourceMappingURL=style.css.map */

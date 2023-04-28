@@ -26,12 +26,13 @@ router.get('/login', function (req, res, next) {
 router.get('/profile', async function (req, res, next) {
     //console.log(req.session)
 
-    //const [users] = await promisePool.query("SELECT * FROM unusers WHERE id=?", req.session.userId);
     //console.log(req.session)
     if (req.session.LoggedIn) {
+        const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", req.session.userId);
         return res.render('profile.njk', {
             title: 'Profile',
-            user: req.session.LoggedIn || 0
+            user: req.session.LoggedIn || 0,
+            users
         }
         );
     } else {

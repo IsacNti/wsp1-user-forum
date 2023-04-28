@@ -1,11 +1,26 @@
 <ul class="ul">
     <li>
-        <a href="/">Till startsida</a>
+        <a href="/">Startsida</a>
+    </li>
+    <li>
+        <a href="/postlista">Lista</a>
     </li>
     {% if user %}
         <li>
+            <a href="/profile">Profile</a>
+        </li>
+        <li>
             <a href="/new">Skappa inlägg</a>
         </li>
+        <li>
+            <a href="/logout">logga ut</a>
+        </li>
     {% else %}
+        <li>
+            <a href="/login">Login</a>
+        </li>
+        <li>
+            <a href="/register">Registrera</a>
+        </li>
     {% endif %}
 </ul>
