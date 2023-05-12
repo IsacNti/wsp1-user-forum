@@ -23,8 +23,56 @@ router.get('/login', function (req, res, next) {
 
 });
 
+
+router.post('/profile', async function (req, res, next) {
+    const { plats, alder , spotify } = req.body;
+    const errors = [];
+    if (!plats){
+        errors.push("plats is required")
+    }
+    if (!spotify){ 
+        errors.push("spotify is required")
+    }
+    if (plats && plats.length <= 2){
+        errors.push("Title must be at least 2 characters")
+    }
+    if (spotify && spotify.length <= 3){
+        errors.push("spotify must be at least more then 3 characters") 
+    }
+    if(errors.length > 0){
+        return res.json(errors)
+    }
+
+
+    let sanitizedPlats, sanitizedSpotify;
+    if (errors.length === 0) {
+        // sanitize title och body, tvätta datan
+        const sanitize = (str) => {
+            let temp = str.trim();
+            temp = validator.stripLow(temp);
+            temp = validator.escape(temp);
+            return temp;
+        };
+        if (plats) sanitizedPlats = sanitize(plats);
+        if (spotify) sanitizedSpotify = sanitize(spotify);
+    }
+    
+    author = req.session.userId;
+
+    let user = await promisePool.query('SELECT * FROM il05users WHERE name = ?', [author]);
+    
+    const uId = user.insertId || user[0][0].id;
+
+    const [rows] = await promisePool.query('INSERT INTO il05profile (uId, plats, spotify, alder) VALUES (?, ?, ?, ?)', [uId, sanitizedPlats, sanitizedSpotify, alder]);
+    res.redirect('/profile');
+
+
+});
+
+
+
 router.get('/profile', async function (req, res, next) {
-    //console.log(req.session)
+    console.log(req.session);
 
     //console.log(req.session)
     if (req.session.LoggedIn) {
@@ -32,16 +80,14 @@ router.get('/profile', async function (req, res, next) {
         return res.render('profile.njk', {
             title: 'Profile',
             user: req.session.LoggedIn || 0,
-            users
+            users,
+            
         }
         );
-    } else {
-
+    } 
+    else {
         return res.redirect('/login')
     }
-
-
-
 });
 
 router.post('/login', async function (req, res, next) {

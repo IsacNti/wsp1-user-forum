@@ -43,34 +43,23 @@
             <form action="/delete" method="POST">
                 <button type="submit">Delete Account</button>
             </form>
-            <button id="myBtn">Open Modal</button>
+
+
+            <button id="myBtn">Edit profile</button>
             <div id="myModal" class="modal">
 
                 <!-- Modal content -->
                 <div class="modal-content">
-                <span class="close">&times;</span>
-                    <div class="inlagg-container">
-                        <form action="/profile" method="post">
-                            <div class="inlagg">
-                                <label for="alder">Ålder</label>
-                                <input type="int" name="alder" id="alder">
-                            </div>
-                            <div class="inlagg">
-                                <label for="plats">Plats</label>
-                                <input type="text" name="plats" id="plats">
-                            </div>
-                            <div class="inlagg">
-                                <label for="spotify">Spotify</label>
-                                <textarea name="spotify" id="spotify" cols="30" rows="10"></textarea>
-                            </div>
-                            <div class="inlagg">
-                                <button type="submit">Skicka</button>
-                            </div>
-                        </form>
-                    </div>
+                    <span class="close">&times;</span>
+                    <p>Some text in the Modal..</p>
+                    <form action="/logout" method="POST">
+                        <button type="submit" id="logout">Logout</button>
+                    </form>
+                    <form action="/delete" method="POST">
+                        <button type="submit">Delete Account</button>
+                    </form>
                 </div>
-              
-              </div>
+            </div>
         </div>
     </div>
 {% endblock %}
