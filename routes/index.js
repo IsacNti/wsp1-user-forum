@@ -39,9 +39,13 @@ router.post('/profile', async function (req, res, next) {
     if (spotify && spotify.length <= 3){
         errors.push("spotify must be at least more then 3 characters") 
     }
+    if(isNaN(alder)){
+        errors.push("Use numbers!")
+    }
     if(errors.length > 0){
         return res.json(errors)
     }
+    
 
 
     let sanitizedPlats, sanitizedSpotify;
@@ -73,14 +77,30 @@ router.post('/profile', async function (req, res, next) {
 
 router.get('/profile', async function (req, res, next) {
     console.log(req.session);
+    console.log(req.params.uId);
+    console.log(req.session.uId);
 
     //console.log(req.session)
     if (req.session.LoggedIn) {
         const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", req.session.userId);
+        const [rows] = await promisePool.query(`
+        SELECT il05profile.*, il05users.name AS username
+        FROM il05profile
+        JOIN il05users ON il05profile.uId = il05users.id ORDER BY createdAt DESC LIMIT 1;`);
+        const [games] = await promisePool.query(`
+        Select * FROM il05userGame
+        JOIN il05games ON il05userGame.gId = il05games.id
+        WHERE il05userGame.uId = ? ORDER BY createdAt desc`, req.session.uId);
+
+        console.log(games)
+        console.log(rows)
+
         return res.render('profile.njk', {
             title: 'Profile',
+            rows: rows,
             user: req.session.LoggedIn || 0,
             users,
+            games: games,            
             
         }
         );
@@ -123,9 +143,10 @@ router.post('/login', async function (req, res, next) {
         bcrypt.compare(password, users[0].password, function (err, result) {
             // result == true logga in, annars buuuu 
             if (result) {
-                //console.log(users[0].id)
+                console.log(users[0].id)
                 req.session.userId = sanitizedUsername;
                 req.session.LoggedIn = true;
+                req.session.uId = users[0].id
                 return res.redirect('/profile');
             } else {
                 errors.push("Invalid username or password")

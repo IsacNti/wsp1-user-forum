@@ -26,13 +26,18 @@ body{
         align-items: center;
         justify-content: space-between;
         min-height: 4rem;
-
+        a {
+            color: rgb(7, 0, 0);
+            text-decoration: none;
+        }
+        
     }
     &__button {
         background-color: transparent;
 
         @media (min-width: 600px) {
             display: none;
+            
         }
     }
 
@@ -44,6 +49,7 @@ body{
             display: flex;
             gap: 1rem;
             list-style: none;
+            
         }
         &--show {
             display: block;
@@ -51,7 +57,9 @@ body{
             > ul {
                 flex-direction: column;
                 padding: 0;
+                
             }
+            
         }
     }
 }
@@ -113,10 +121,6 @@ main {
 
 }
 
-a{
-    color: rgb(7, 0, 0);
-    text-decoration: none;
-}
 
 .menu-img {
     width: 8rem;
@@ -170,6 +174,10 @@ footer{
     background-color: #FF7C00;
     width: 100%;
     height: 3rem;
+    a {
+        color: rgb(7, 0, 0);
+        text-decoration: none;
+    }
 }
 
 
@@ -200,6 +208,9 @@ footer{
     display: flex;
     align-items: flex-start;
     flex-direction: column;
+    a {
+        color: rgb(7, 0, 0);
+    }
 }
 
 .pro-2{
@@ -219,6 +230,12 @@ footer{
 .pro-beskriv{
     padding-top: 1rem;
     padding-bottom: 1rem;
+}
+
+.title{
+    height: 2rem;
+    display: flex;
+    align-items: flex-end;
 }
 
 .ul {
@@ -292,4 +309,9 @@ footer{
     color: black;
     text-decoration: none;
     cursor: pointer;
+}
+
+.profil-container{
+    background-color: #FF7C00;
+    border-radius: 10px;
 }

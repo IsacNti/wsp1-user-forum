@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="sv">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{title}}</title>
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
+    <body>
+        {% include "nav.njk" %}
+        <main class="container flow">
+            <div class="data-padding">
+{% extends "layout.njk" %}
+{% block content %}
+<div class="data-color">
+    <h1 style="padding: 1rem;">Flödde</h1>
+    {% for row in rows %}
+    <div class="data-samling">
+        <div class="data-border">
+            <div>
+                <div class="data-containter">
+                    <div class="data-container-title">
+                        <div>
+                            <a href="/post/{{ row.id }}">
+                                <h2>{{ row.title | safe}}</h2>
+                            </a>
+                        </div>
+                        <div class="Forfattare">
+                            <h3>Författare:</h3>
+                            <h4> {{ row.username | safe}}</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="data-text">
+                    <p>{{ row.content | safe}} </p>
+                </div>
+            </div>
+            <div class="data-containter">
+                <p>{{ row.createdAt }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+            </div>
+            <section class="flow">
+                <p> Skriv saker under data </p>
+            </section>
+        </main>
+        <div class="space"></div>
+        <div class="footer-flex">
+            <footer class="fotter">
+                {% include "footer.njk" %}
+            </footer>
+        </div>
+        <script src="/js/menu.js"></script>
+    </body>
+</html>

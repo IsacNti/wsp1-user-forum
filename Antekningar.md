@@ -54,3 +54,8 @@ Fixa så då du endast kan se post då du inloggad samt fixa validering
 
 den visar allt
 
+## 2023-05-12
+
+### Profil fix
+
+Fixat så de finns en pop upp i profil så de går uppdatera sin profil fixat så de du lägger in i profilen läggs till och syns värderna är ålder, plats, spotify, uId som är en form av userid.
