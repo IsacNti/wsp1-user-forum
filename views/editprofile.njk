@@ -1,64 +1,102 @@
 {% extends "layout.njk" %}
-{% block  content %}
-    <div class="data-color">
-        <div class="profile">
-            <div class="profile-hero">
-                <div class="pro-1">
+{% block content %}
+<div class="profil-container">
+    {% for row in rows %}
+    <div class="profile">
+        <div class="profile-hero">
+            <div class="pro-1">
+                <div class="title">
                     {% for user in users %}
-                        <h1>{{ user.name | safe }}</h1>
+                    <h2>{{ user.name | safe }}</h2>
                     {% endfor %}
-                        <p>Ålder: </p>
-                        <p>Land: </p>
+                </div>
+                <p>Ålder: {{ row.alder | safe}}</p>
+                <p>Land: {{ row.plats | safe}}</p>
+                <h3 class="text-center">Spotify länk:</h3>
+                {% for user in users %}
+                <a href="{{ row.spotify | safe}}"><h4>{{ user.name | safe }}</h4></a>
+                {% endfor %}
+            </div>
+            <div class="pro-2">
+                <div class="title">
                     <h3 class="text-center">3 senaste tillagda spel </h3>
-                    <ul>
-                        <li>
-                            <p>{{ row.spel | safe}}</p>
-                        </li>
-                    </ul>
                 </div>
-                <div class="pro-2">
-                    <h3 class="text-center">3 senaste önskade spel </h3>
-                    <ul>
-                        <li>
-                            <p>{{ row.villspel | safe}}</p>
-                        </li>
-                    </ul>
-                    <h3  class="text-center">3 spotify länkar </h3>
-                    <ul>
-                        <li>
-                            <p>{{ row.spotify | safe}}</p>
-                        </li>
-                    </ul>
-                </div>
-                <div class="pro-3">
-                    profil bild
-                </div>
+                <ul>{% set g3 = games.slice(0, 3) %}
+                    {% for games in g3 %}
+                    <p>{{ games.title | safe}}</p>
+                    {% endfor %}
+                </ul>
             </div>
-            <div class="pro-beskriv">
-                Personlig beskrivnings text, (delete Account)?
+            <div class="pro-3">
+                profil bild
             </div>
-            <form action="/logout" method="POST">
-                <button type="submit" id="logout">Logout</button>
-            </form>
-            <form action="/delete" method="POST">
-                <button type="submit">Delete Account</button>
-            </form>
+        </div>
+        <div class="pro-beskriv">
+            Personlig beskrivnings text, (delete Account)?
+        </div>
+        <form action="/logout" method="POST">
+            <button type="submit" id="logout">Logout</button>
+        </form>
+        <form action="/delete" method="POST">
+            <button type="submit">Delete Account</button>
+        </form>
+        <button id="myBtn">Edit profile</button>
+        <div id="myModal" class="modal">
 
-
-            <button id="myBtn">Edit profile</button>
-            <div id="myModal" class="modal">
-
-                <!-- Modal content -->
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <p>Some text in the Modal..</p>
-                    <form action="/logout" method="POST">
-                        <button type="submit" id="logout">Logout</button>
-                    </form>
-                    <form action="/delete" method="POST">
-                        <button type="submit">Delete Account</button>
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div class="inlagg-container">
+                    <form action="/info" method="post">
+                        <div class="inlagg">
+                            <label for="alder">Ålder</label>
+                            <input type="int" name="alder" id="alder">
+                        </div>
+                        <div class="inlagg">
+                            <label for="plats">Plats</label>
+                            <input type="text" name="plats" id="plats">
+                        </div>
+                        <div class="inlagg">
+                            <label for="spotify">Spotify</label>
+                            <textarea name="spotify" id="spotify" cols="30" rows="10"></textarea>
+                        </div>
+                        <div class="inlagg">
+                            <button type="submit">Skicka</button>
+                        </div>
                     </form>
                 </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="space"></div>
+    <div class="inlagg-container">
+        <h1>Games</h1>
+        <ul>
+        {% for games in games %}
+            <p>{{ games.title | safe}}</p>
+        {% endfor %}
+        </ul>
+        <button id="myGame">Add games</button>
+        <div id="myGames" class="modal1">
+
+            <!-- Modal content -->
+            <div class="modal-content1">
+                <span class="close1">&times;</span>
+                {% for row in rows %}
+                <div class="inlagg-container">
+                    <form action="/games" method="post">
+                        <div class="inlagg">
+                            <label for="game">Game name</label>
+                            <input type="text" name="game" id="game">
+                        </div>
+                        <div class="inlagg">
+                            <button type="submit">Skicka</button>
+                        </div>
+                    </form>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>

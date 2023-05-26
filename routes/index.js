@@ -5,7 +5,8 @@ const pool = require('../utils/database.js');
 const promisePool = pool.promise();
 const bcrypt = require('bcrypt');
 const { post } = require('../app.js');
-var validator = require('validator')
+var validator = require('validator');
+const session = require('express-session');
 //const session = require('express-session');
 
 
@@ -73,6 +74,60 @@ router.post('/profile', async function (req, res, next) {
 
 });
 
+router.post('/games', async function (req, res, next) {
+    const {game} = req.body;
+    const errors = [];
+    if (!game){
+        errors.push("Game is required")
+    }
+
+    if (game && game.length <= 2){
+        errors.push("Game must be at least 2 characters")
+    }
+
+    if(errors.length > 0){
+        return res.json(errors)
+    }
+    
+
+
+    let sanitizedGame;
+    if (errors.length === 0) {
+        // sanitize title och body, tvätta datan
+        const sanitize = (str) => {
+            let temp = str.trim();
+            temp = validator.stripLow(temp);
+            temp = validator.escape(temp);
+            return temp;
+        };
+        if (game) sanitizedGame = sanitize(game);
+    }
+    
+    let [games] = await promisePool.query('SELECT title FROM il05games WHERE title = ?', [sanitizedGame]);
+
+    if (games && games.length < 1) {
+        games = await promisePool.query('INSERT INTO il05games (title) VALUES (?)', [sanitizedGame]);
+    }
+    console.log(games)
+    let [gamer] = await promisePool.query('SELECT * FROM il05games WHERE title = ?', [sanitizedGame]);
+    
+    const uId = req.session.uId;
+
+    console.log("gamer =" + gamer[0].id)
+
+    const gId = gamer[0].id;
+
+    console.log(gId);
+
+
+
+
+    const [rows] = await promisePool.query('INSERT INTO il05userGame (uId, gId) VALUES (?, ?)', [uId, gId]);
+    res.redirect('/profile');
+
+
+});
+
 
 
 router.get('/profile', async function (req, res, next) {
@@ -95,12 +150,12 @@ router.get('/profile', async function (req, res, next) {
         console.log(games)
         console.log(rows)
 
-        return res.render('profile.njk', {
+        return res.render('editprofile.njk', {
             title: 'Profile',
             rows: rows,
             user: req.session.LoggedIn || 0,
             users,
-            games: games,            
+            games: games,
             
         }
         );
@@ -108,6 +163,25 @@ router.get('/profile', async function (req, res, next) {
     else {
         return res.redirect('/login')
     }
+});
+
+router.get('/publicprofile/:id', async function (req, res) {
+
+    console.log(req.params)
+    const [users] = await promisePool.query("SELECT * FROM il05users WHERE id=?", [req.params.id]);
+    const [rows] = await promisePool.query(`
+        SELECT il05profile.*, il05users.name AS username
+        FROM il05profile
+        JOIN il05users ON il05profile.uId = il05users.id
+        WHERE il05profile.id = ? ORDER BY createdAt DESC LIMIT 1;`,
+        [req.params.uId]
+    );
+    console.log(req.params.uId)
+    console.log(rows)
+    res.render('profile.njk', {
+        rows: rows[0],
+        title: 'Forum',
+    });
 });
 
 router.post('/login', async function (req, res, next) {
@@ -343,10 +417,17 @@ router.get('/postlista', async function (req, res, next) {
     SELECT il05forum.*, il05users.name AS username
     FROM il05forum
     JOIN il05users ON il05forum.authorId = il05users.id ORDER BY createdAt DESC;`);
+
+    const [profile] = await promisePool.query(`
+    SELECT il05profile.*
+    FROM il05profile
+    JOIN il05users ON il05profile.uId = il05users.id ORDER BY createdAt DESC LIMIT 1;`);
+
     res.render('lista.njk', {
         rows: rows,
         title: 'Forum',
-        user: req.session.LoggedIn || 0
+        user: req.session.LoggedIn || 0,
+        profile: profile
     });
 });
 
