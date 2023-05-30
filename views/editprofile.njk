@@ -22,14 +22,12 @@
                 <div class="title">
                     <h3 class="text-center">3 senaste tillagda spel </h3>
                 </div>
-                {% for row in rows %}
                 <ul>
                     {% set g3 = games.slice(0, 3) %}
                     {% for games in g3 %}
                     <p>{{ games.title | safe}}</p>
                     {% endfor %}
                 </ul>
-                {% endfor %}
             </div>
             <div class="pro-3">
                 profil bild
@@ -87,7 +85,6 @@
             <!-- Modal content -->
             <div class="modal-content1">
                 <span class="close1">&times;</span>
-                {% for row in rows %}
                 <div class="inlagg-container">
                     <form action="/games" method="post">
                         <div class="inlagg">
@@ -99,7 +96,6 @@
                         </div>
                     </form>
                 </div>
-                {% endfor %}
             </div>
         </div>
     </div>
