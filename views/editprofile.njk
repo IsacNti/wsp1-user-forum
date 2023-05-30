@@ -1,7 +1,6 @@
 {% extends "layout.njk" %}
 {% block content %}
 <div class="profil-container">
-    {% for row in rows %}
     <div class="profile">
         <div class="profile-hero">
             <div class="pro-1">
@@ -10,22 +9,27 @@
                     <h2>{{ user.name | safe }}</h2>
                     {% endfor %}
                 </div>
+                {% for row in rows %}
                 <p>Ålder: {{ row.alder | safe}}</p>
                 <p>Land: {{ row.plats | safe}}</p>
                 <h3 class="text-center">Spotify länk:</h3>
                 {% for user in users %}
                 <a href="{{ row.spotify | safe}}"><h4>{{ user.name | safe }}</h4></a>
                 {% endfor %}
+                {% endfor %}
             </div>
             <div class="pro-2">
                 <div class="title">
                     <h3 class="text-center">3 senaste tillagda spel </h3>
                 </div>
-                <ul>{% set g3 = games.slice(0, 3) %}
+                {% for row in rows %}
+                <ul>
+                    {% set g3 = games.slice(0, 3) %}
                     {% for games in g3 %}
                     <p>{{ games.title | safe}}</p>
                     {% endfor %}
                 </ul>
+                {% endfor %}
             </div>
             <div class="pro-3">
                 profil bild
@@ -68,7 +72,6 @@
             </div>
         </div>
     </div>
-    {% endfor %}
 </div>
 <div class="space"></div>
     <div class="inlagg-container">

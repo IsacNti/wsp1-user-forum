@@ -1,7 +1,8 @@
 {% extends "layout.njk" %}
 {% block content %}
+
+{% for row in rows %}
 <div class="profil-container">
-    {% for row in rows %}
     <div class="profile">
         <div class="profile-hero">
             <div class="pro-1">
@@ -35,8 +36,8 @@
             Personlig beskrivnings text, (delete Account)?
         </div>
     </div>
-    {% endfor %}
 </div>
+{% endfor %}
 <div class="space"></div>
 <div class="inlagg-container">
     <h1>Games</h1>

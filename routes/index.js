@@ -18,35 +18,39 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/login', function (req, res, next) {
-    if(!req.session.LoggedIn){
-    return res.render('form.njk', { title: 'Login ALC', user: req.session.LoggedIn || 0 });
+    if (!req.session.LoggedIn) {
+        return res.render('form.njk', { title: 'Login ALC', user: req.session.LoggedIn || 0 });
     }
 
 });
 
 
-router.post('/profile', async function (req, res, next) {
-    const { plats, alder , spotify } = req.body;
+router.post('/info', async function (req, res, next) {
+    const { plats, alder, spotify } = req.body;
     const errors = [];
-    if (!plats){
+    if (!req.session.LoggedIn){
+        return res.redirect('/login')
+    }
+
+    if (!plats) {
         errors.push("plats is required")
     }
-    if (!spotify){ 
+    if (!spotify) {
         errors.push("spotify is required")
     }
-    if (plats && plats.length <= 2){
+    if (plats && plats.length <= 2) {
         errors.push("Title must be at least 2 characters")
     }
-    if (spotify && spotify.length <= 3){
-        errors.push("spotify must be at least more then 3 characters") 
+    if (spotify && spotify.length <= 3) {
+        errors.push("spotify must be at least more then 3 characters")
     }
-    if(isNaN(alder)){
+    if (isNaN(alder)) {
         errors.push("Use numbers!")
     }
-    if(errors.length > 0){
+    if (errors.length > 0) {
         return res.json(errors)
     }
-    
+
 
 
     let sanitizedPlats, sanitizedSpotify;
@@ -61,11 +65,11 @@ router.post('/profile', async function (req, res, next) {
         if (plats) sanitizedPlats = sanitize(plats);
         if (spotify) sanitizedSpotify = sanitize(spotify);
     }
-    
+
     author = req.session.userId;
 
     let user = await promisePool.query('SELECT * FROM il05users WHERE name = ?', [author]);
-    
+
     const uId = user.insertId || user[0][0].id;
 
     const [rows] = await promisePool.query('INSERT INTO il05profile (uId, plats, spotify, alder) VALUES (?, ?, ?, ?)', [uId, sanitizedPlats, sanitizedSpotify, alder]);
@@ -75,20 +79,25 @@ router.post('/profile', async function (req, res, next) {
 });
 
 router.post('/games', async function (req, res, next) {
-    const {game} = req.body;
+    const { game } = req.body;
     const errors = [];
-    if (!game){
+    
+    if (!req.session.LoggedIn){
+        return res.redirect('/login')
+    }
+
+    if (!game) {
         errors.push("Game is required")
     }
 
-    if (game && game.length <= 2){
+    if (game && game.length <= 2) {
         errors.push("Game must be at least 2 characters")
     }
 
-    if(errors.length > 0){
+    if (errors.length > 0) {
         return res.json(errors)
     }
-    
+
 
 
     let sanitizedGame;
@@ -102,7 +111,7 @@ router.post('/games', async function (req, res, next) {
         };
         if (game) sanitizedGame = sanitize(game);
     }
-    
+
     let [games] = await promisePool.query('SELECT title FROM il05games WHERE title = ?', [sanitizedGame]);
 
     if (games && games.length < 1) {
@@ -110,7 +119,7 @@ router.post('/games', async function (req, res, next) {
     }
     console.log(games)
     let [gamer] = await promisePool.query('SELECT * FROM il05games WHERE title = ?', [sanitizedGame]);
-    
+
     const uId = req.session.uId;
 
     console.log("gamer =" + gamer[0].id)
@@ -141,7 +150,8 @@ router.get('/profile', async function (req, res, next) {
         const [rows] = await promisePool.query(`
         SELECT il05profile.*, il05users.name AS username
         FROM il05profile
-        JOIN il05users ON il05profile.uId = il05users.id ORDER BY createdAt DESC LIMIT 1;`);
+        JOIN il05users ON il05profile.uId = il05users.id
+        WHERE il05profile.uId = ? ORDER BY createdAt DESC LIMIT 1`, req.session.uId);
         const [games] = await promisePool.query(`
         Select * FROM il05userGame
         JOIN il05games ON il05userGame.gId = il05games.id
@@ -156,10 +166,10 @@ router.get('/profile', async function (req, res, next) {
             user: req.session.LoggedIn || 0,
             users,
             games: games,
-            
+
         }
         );
-    } 
+    }
     else {
         return res.redirect('/login')
     }
@@ -173,14 +183,20 @@ router.get('/publicprofile/:id', async function (req, res) {
         SELECT il05profile.*, il05users.name AS username
         FROM il05profile
         JOIN il05users ON il05profile.uId = il05users.id
-        WHERE il05profile.id = ? ORDER BY createdAt DESC LIMIT 1;`,
-        [req.params.uId]
-    );
-    console.log(req.params.uId)
+        WHERE il05profile.uId = ? ORDER BY createdAt DESC LIMIT 1;`, [req.params.id]);
+    const [games] = await promisePool.query(`
+        Select * FROM il05userGame
+        JOIN il05games ON il05userGame.gId = il05games.id
+        WHERE il05userGame.uId = ? ORDER BY createdAt desc`, [req.params.id]);
+    console.log(req.params.id)
     console.log(rows)
+    console.log(games)
+
     res.render('profile.njk', {
-        rows: rows[0],
+        users: users,
+        rows: rows, 
         title: 'Forum',
+        games: games,
     });
 });
 
@@ -221,6 +237,7 @@ router.post('/login', async function (req, res, next) {
                 req.session.userId = sanitizedUsername;
                 req.session.LoggedIn = true;
                 req.session.uId = users[0].id
+                console.log(req.session.uId)
                 return res.redirect('/profile');
             } else {
                 errors.push("Invalid username or password")
@@ -254,15 +271,15 @@ router.post('/logout', async function (req, res, next) {
     if (req.session.LoggedIn) {
         req.session.LoggedIn = false;
         res.redirect('/');
-        
+
     } else {
         return res.status(401).send("Access denied");
     }
 });
 
 router.get('/register', async function (req, res) {
-    if(!req.session.LoggedIn) {
-    return res.render('register.njk', { title: 'Register', user: req.session.LoggedIn || 0 })
+    if (!req.session.LoggedIn) {
+        return res.render('register.njk', { title: 'Register', user: req.session.LoggedIn || 0 })
     }
     res.redirect('/profile')
 });
@@ -332,8 +349,8 @@ router.get('/crypt/:pwd', async function (req, res, next) {
 
 
 router.get('/new', async function (req, res, next) {
-    if(req.session.LoggedIn){
-    const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", req.session.userId);
+    if (req.session.LoggedIn) {
+        const [users] = await promisePool.query("SELECT * FROM il05users WHERE name=?", req.session.userId);
         return res.render('new.njk', {
             title: 'Nytt inlägg',
             users,
@@ -349,25 +366,25 @@ router.get('/new', async function (req, res, next) {
         //users,
     });
     */
-   res.redirect('/login')
+    res.redirect('/login')
 });
 
 router.post('/new', async function (req, res, next) {
     const { author, title, content } = req.body;
     const errors = [];
-    if (!title){
+    if (!title) {
         errors.push("Title is required")
     }
-    if (!content){ 
+    if (!content) {
         errors.push("Content is required")
     }
-    if (title && title.length <= 3){
+    if (title && title.length <= 3) {
         errors.push("Title must be at least 3 characters")
     }
-    if (content && content.length <= 10){
-        errors.push("Content must be at least 10 characters") 
+    if (content && content.length <= 10) {
+        errors.push("Content must be at least 10 characters")
     }
-    if(errors.length > 0){
+    if (errors.length > 0) {
         return res.json(errors)
     }
 
@@ -385,10 +402,10 @@ router.post('/new', async function (req, res, next) {
         if (content) sanitizedContent = sanitize(content);
     }
 
-    
-    
+
+
     let user = await promisePool.query('SELECT * FROM il05users WHERE name = ?', [author]);
-    
+
     const userId = user.insertId || user[0][0].id;
     const [rows] = await promisePool.query('INSERT INTO il05forum (authorId, title, content) VALUES (?, ?, ?)', [userId, sanitizedTitle, sanitizedContent]);
     res.redirect('/');
